@@ -25,7 +25,9 @@ jobs:
               https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
             | jq -r '.head.ref')
           echo "::set-output name=branch::$branch"
-      - name: Checkout tag/branch
+      - name: Fetch branch
+        run: git fetch
+      - name: Checkout branch
         run: git checkout ${{ steps.getbranch.outputs.branch }}
       # Continue with standard build
       - uses: actions/setup-node@v2
