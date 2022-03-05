@@ -25,9 +25,9 @@ jobs:
               https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
             | jq -r '.head.ref')
           echo "::set-output name=branch::$branch"
-      - name: Fetch branch
+      - name: Fetch Branch
         run: git fetch
-      - name: Checkout branch
+      - name: Checkout Branch
         run: git checkout ${{ steps.getbranch.outputs.branch }}
       # Continue with standard build
       - uses: actions/setup-node@v2
@@ -43,5 +43,5 @@ jobs:
       # Commit the changes
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Update snapshots
+          commit_message: Update Snapshots
 
