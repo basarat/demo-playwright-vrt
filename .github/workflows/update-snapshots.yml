@@ -10,28 +10,23 @@ jobs:
     name: Update snapshot slash command
     # This job will only run if the comment was on a pull requests and matches the slash command
     if: ${{ github.event.issue.pull_request && github.event.comment.body == '/update-snapshots'}}
+    # Common with standard build
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository and setup-node
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      # Install test run dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
       # Update the snapshots
       - name: Update snapshots
         run: npx playwright test --update-snapshots --reporter=list
-      # Setup bot information for pushing new changes
-      # Here we use the id from the github actions bot: https://api.github.com/users/better-informatics[bot]
-      - name: Setup bot git information
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-      # Commit changes to snapshot files.
-      - name: Commit new snapshots
-        run: |
-          git add *.snap
-          git commit -m 'Updating snapshots'
-          git push
+      # Commit the changes
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update snapshots
+
