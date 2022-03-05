@@ -1,0 +1,50 @@
+name: Update snapshots
+
+on:
+  # Run any time any issue has a new comment on (this includes PRs)
+  issue_comment:
+    types: [created]
+
+jobs:
+  snapshot_slash_command:
+    name: Update snapshot slash command
+    # This job will only run if the comment was on a pull requests and matches the slash command
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/update-snapshots'}}
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository and setup-node
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      # Get the branch the PR is associated to
+      - name: Get Branch
+        id: getbranch
+        run: |
+          branch=$(\
+            curl \
+              -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+              https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
+            | jq -r '.head.ref')
+          echo "::set-output name=branch::$branch"
+      # Hop into the PR branch
+      - name: Checkout tag/branch
+        run: git checkout ${{ steps.getbranch.outputs.branch }}
+      # Install test run dependencies
+      - name: Install dependencies
+        run: npm install
+      # Update the snapshots
+      - name: Update snapshots
+        run: npx playwright test --update-snapshots
+      # Setup bot information for pushing new changes
+      # Here we use the id from the github actions bot: https://api.github.com/users/better-informatics[bot]
+      - name: Setup bot git information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+      # Commit changes to snapshot files.
+      - name: Commit new snapshots
+        run: |
+          git add *.snap
+          git commit -m 'Updating snapshots'
+          git push
