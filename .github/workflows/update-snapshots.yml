@@ -1,4 +1,4 @@
-name: Update snapshots
+name: Update Snapshots
 
 on:
   # Run any time any issue has a new comment on (this includes PRs)
