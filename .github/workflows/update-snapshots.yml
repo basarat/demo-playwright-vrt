@@ -17,19 +17,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      # Get the branch the PR is associated to
-      - name: Get Branch
-        id: getbranch
-        run: |
-          branch=$(\
-            curl \
-              -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-              https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
-            | jq -r '.head.ref')
-          echo "::set-output name=branch::$branch"
-      # Hop into the PR branch
-      - name: Checkout tag/branch
-        run: git checkout ${{ steps.getbranch.outputs.branch }}
       # Install test run dependencies
       - name: Install dependencies
         run: npm install
