@@ -22,7 +22,7 @@ jobs:
         run: npm install
       # Update the snapshots
       - name: Update snapshots
-        run: npx playwright test --update-snapshots
+        run: npx playwright test --update-snapshots --reporter=list
       # Setup bot information for pushing new changes
       # Here we use the id from the github actions bot: https://api.github.com/users/better-informatics[bot]
       - name: Setup bot git information
