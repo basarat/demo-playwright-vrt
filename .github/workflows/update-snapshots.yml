@@ -1,7 +1,7 @@
 name: Update Snapshots
 
 on:
-  # Run any time any issue has a new comment on (this includes PRs)
+  # Run any time any issue/PR has a new comment
   issue_comment:
     types: [created]
 
@@ -48,4 +48,3 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Update Snapshots
-
