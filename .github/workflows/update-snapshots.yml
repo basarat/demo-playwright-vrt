@@ -14,8 +14,12 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+      # Checkout with personal TOKEN
+      # and hop on the PR branch
       - uses: actions/checkout@v2
-      # Get the branch the PR is associated to and hop into it
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_ACTION_TOKEN }}
       - name: Get Branch
         id: getbranch
         run: |
