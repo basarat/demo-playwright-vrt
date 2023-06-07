@@ -28,7 +28,7 @@ jobs:
               -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
               https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
             | jq -r '.head.ref')
-          echo "::set-output name=branch::$branch"
+          echo "branch=$branch" >> $GITHUB_OUTPUT
       - name: Fetch Branch
         run: git fetch
       - name: Checkout Branch
